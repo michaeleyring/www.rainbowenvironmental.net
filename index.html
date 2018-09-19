@@ -1,4 +1,4 @@
-+net view <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -29,13 +29,14 @@
   <link href="css/owl.theme.css" rel="stylesheet" media="screen" />
   <link href="css/animate.css" rel="stylesheet" />
   <link href="css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <!-- boxed bg -->
   <link id="bodybg" href="bodybg/bg1.css" rel="stylesheet" type="text/css" />
   <!-- template s
   +
   +in -->
-  <link id="t-colors" href="color/default.css" rel="stylesheet">
+  <link id="t-colors" href="color/default.css" rel="stylesheet" />
 
   <!-- structured data for company -->
   <script type="application/ld+json">
@@ -81,6 +82,11 @@
     "email": "resnet76@gmail.com"
   }
   </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" type="text/javascript"></script>
+
+
+
 </head>
 
 <body id="page-top" data-spy="scroll" data-target=".navbar-custom">
@@ -150,11 +156,8 @@
                     <li><span class="fa fa-check fa-2x icon-success"></span> <span class="list"><strong>New Installation</strong><br />We specialize in new installations of HVAC systems and burners</span></li>
                     <li><span class="fa fa-check fa-2x icon-success"></span> <span class="list"><strong>Maintenance</strong><br />If you need help with an existing system, we can help!</span></li>
                   </ul>
-
                 </div>
               </div>
-
-
             </div>
             <div class="col-lg-6">
               <div class="form-wrapper">
@@ -162,21 +165,23 @@
 
                   <div class="panel panel-skin">
                     <div class="panel-heading">
-                      <h3 class="panel-title"><span class="fa fa-envelope-o"></span><span class="fa fa-phone-square"></span> Make an appoinment <small>(or call us now, it's free!)</small></h3>
+                      <h3 class="panel-title"><span class="fa fa-envelope-o"></span><span class="fa fa-phone-square"></span> Make an appoinment <small>(or call us now, it&apos;s free!)</small></h3>
                     </div>
                     <div class="panel-body">
-                      <form role="form" class="lead">
+                      <div id="sendmessage"></div>
+                      <div id="errormessage"></div>
+                        <form action="index.html" class="contactForm" id="contactForm"> 
                         <div class="row">
                           <div class="col-xs-6 col-sm-6 col-md-6">
                             <div class="form-group">
                               <label>First Name</label>
-                              <input type="text" name="first_name" id="first_name" class="form-control input-md">
+                              <input type="text" name="firstname" id="firstname" class="form-control input-md">
 												</div>
                             </div>
                             <div class="col-xs-6 col-sm-6 col-md-6">
                               <div class="form-group">
                                 <label>Last Name</label>
-                                <input type="text" name="last_name" id="last_name" class="form-control input-md">
+                                <input type="text" name="lastname" id="lastname" class="form-control input-md">
 												</div>
                               </div>
                             </div>
@@ -192,18 +197,73 @@
                                   <div class="form-group">
                                     <label>Phone number</label>
                                     <input type="text" name="phone" id="phone" class="form-control input-md">
-												</div>
                                   </div>
                                 </div>
+                            </div>
 
-                                <input type="submit" value="Submit" class="btn btn-skin btn-block btn-lg">
+                            <button id='submit' class="btn btn-skin btn-block btn-lg">SUBMIT</button>
 
-                                <p class="lead-footer">* We'll contact you by phone & email to schedule a consultation.</p>
+                            <script type="text/javascript">
+                              $(document).ready(function() {
+                                $("#submit").on('click', function(e) {
+                                        e.preventDefault();
+                                        var URL = "https://ebtyr3r7j4.execute-api.us-east-1.amazonaws.com/default/mailForward";
 
+                                        var Namere = /[A-Za-z]{1}[A-Za-z]/;
+                                        if (!Namere.test($("#firstname").val())) {
+                                          alert("First name can not be less than 2 char");
+                                          return;
+                                        }
+                                        var mobilere = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+                                        if (!mobilere.test($("#phone").val())) {
+                                          alert("Please enter a valid phone number (xxx-xxx-xxxx, xxx.xxx.xxxx, or xxx xxx xxxx)");
+                                          return;
+                                        }
+                                        if ($("#email").val() == "") {
+                                          alert("Please enter your email id");
+                                          return;
+                                        }
+
+                                        var reeamil = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,6})?$/;
+                                        if (!reeamil.test($("#email").val())) {
+                                          alert("Please enter a valid email address");
+                                          return;
+                                        }
+
+                                        var form_firstname = $("#firstname").val();
+                                        var form_lastname = $("#lastname").val();
+                                        var form_phone = $("#phone").val();
+                                        var form_email = $("#email").val();
+
+                                        $.ajax({
+                                          type: "POST",
+                                          url: "https://ebtyr3r7j4.execute-api.us-east-1.amazonaws.com/default/mailForward",
+                                          dataType: "json",
+                                          crossDomain: "true",
+                                          contentType: "application/json",
+                                          data: JSON.stringify({
+                                            'firstname': form_firstname,
+                                            'lastname': form_lastname,
+                                            'phone': form_phone,
+                                            'email': form_email
+                                          }),
+
+                                          success: function() {
+                                            // acknowledge success to user. Modal form will reset
+                                            $("#successModal").modal('show');
+                                          },
+                                          error: function() {
+                                            // Note there was an issue and provide instructions. Modal form will reset
+                                            $("#failureModal").modal('show');
+                                          }
+                                        });
+                                    })
+                              })
+                            </script>
+                            <p class="lead-footer">* We&apos;ll contact you by phone & email to schedule a consultation.</p>
                       </form>
                     </div>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -749,6 +809,46 @@
   </div>
   <a href="#" class="scrollup"><i class="fa fa-angle-up active"></i></a>
 
+  <!-- Modal success -->
+  <div id="successModal" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="icon-box">
+                    <i class="material-icons">done</i>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Thank you for your request!</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">Your request will be reviewed shortly and a response made to the email address or phone number provided.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"  onclick="document.getElementById('contactForm').reset();">OK</button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- Modal success -->
+  <div id="failureModal" class="modal fade">
+    <div class="modal-dialog modal-confirm-f">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="icon-box">
+                    <i class="material-icons">error</i>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Ooop! An Error Occurred.</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-center">We are very sorry but an error occurred recieving your request. Please try again. If this occurs again, please send us an email to resnet76@gmail.com and we will look at this and schedule a consultation for you.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"  onclick="document.getElementById('contactForm').reset();">OK</button>
+            </div>
+        </div>
+    </div>
+  </div>
   <!-- Core JavaScript Files -->
   <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
